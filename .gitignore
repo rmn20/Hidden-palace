@@ -1,4 +1,4 @@
-build/
-dist/
-OBJ2DS/build/
-OBJ2DS/nbproject/private/
+/build/
+/dist/
+/OBJ2DS/build/
+/OBJ2DS/nbproject/private/
