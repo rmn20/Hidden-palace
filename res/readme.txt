@@ -2,7 +2,7 @@ Everything in /nitrofs/ directory is licensed under /licenses/CC-A-NC-SA-4.txt l
 
 About files in /texture sources/ directory:
 
-brickdecor.png, brickdecorlq.png, building.png, building2.png, door.png, doorvdnh.png, fence.png, ornament.png, smalwindow.png, sweetwall.png are based on textures by Maria Gelfand (soviettextures.com)
+brickdecor.png, brickdecorlq.png, building.png, building2.png, door.png, doorvdnh.png, fence.png, ornament.png, smalwindow.png, sweetwall.png are based on textures by Maria Gelfand (https://soviettextures.com)
 
 buildwall.png, smooth2.png, lqwall.png, rug.png are based on textures from IKBASE by Iikka "Fingers" Keranen (www.digital-eel.com/surface) (webarchive)
 beton.png, pavement.png, wdfloor.png are based on textures by Kevin "Rorshach" Johnstone
