@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 u8* loadImpl(char* file, char* type, u32* size) {
-	FILE* inf = fopen(file, "rb");
+	FILE* inf = fopen(file, type);
 	
 	if(inf) {
 		fseek(inf, 0, SEEK_END);
