@@ -40,6 +40,7 @@ void textureLoad(Texture* tex, char* path) {
 				if(*((u16*) img.palette) == RGB15(0, 31, 0)) alpha |= GL_TEXTURE_COLOR0_TRANSPARENT;
 			}
 			
+			DC_FlushRange(img.image.data8, img.width * img.height * (img.bpp >> 3)); //Why?
 			glTexImage2D(0, 0, getFormat(&img), w, h, 0, TEXGEN_TEXCOORD | GL_TEXTURE_WRAP_S | GL_TEXTURE_WRAP_T | alpha, img.image.data8);
 			
 			glBindTexture(0, 0);

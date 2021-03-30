@@ -76,11 +76,13 @@ int main() {
 	vramSetBankH(VRAM_H_LCD);
 	vramSetBankI(VRAM_I_SUB_SPRITE);
 	
-	u16 bgText = bgInitSub(3, BgType_Text4bpp, BgSize_T_256x256, 0, 1);
-	bgSetPriority(bgText, 1);
-	consoleInit(NULL, 3, BgType_Text4bpp, BgSize_T_256x256, bgGetMapBase(bgText), bgGetTileBase(bgText), false, true);
+	/*u16 bgText = bgInitSub(3, BgType_Text4bpp, BgSize_T_256x256, 0, 1);*/
+	PrintConsole* console = consoleInit(NULL, 3, BgType_Text4bpp, BgSize_T_256x256, 0, 1, false, true);
+	stderr = stdout;
+	u16 bgText = console->bgId;
 	/*consoleDebugInit(DebugDevice_NOCASH);
 	stdout = stderr;*/
+	bgSetPriority(bgText, 1);
 	
 	glInit();
 	//enable textures

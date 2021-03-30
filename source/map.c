@@ -55,11 +55,11 @@ void mapUnload(Map* map) {
 void mapDestroy(Map* map) {
 	if(map == NULL) return;
 	
-	if(map->file.flags & MUSIC_STOP_FLAG && map->musicID) {
-		mmStop();
-		mmUnload(map->musicID);
-	}
 	mapUnload(map);
+	if(map->musicID) {
+		if(mmActive()) mmStop();
+		mmUnload(map->musicID - 1);
+	}
 	if(map->skyModel) modelDestroy(map->skyModel);
 	
 	free(map);
@@ -106,7 +106,8 @@ void mapLoad(Map* map, char* path) {
 			
 			if(map->musicID - 1 != musicID) {
 				if(map->musicID) {
-					//idk why but maxmod just breaks after this function and I dont have time to fix this
+					//idk why but maxmod just breaks after this function;
+					//https://devkitpro.org/viewtopic.php?f=29&t=281 bug in maxmod
 					if(mmActive()) mmStop();
 					mmUnload(map->musicID - 1);
 				}
@@ -116,13 +117,13 @@ void mapLoad(Map* map, char* path) {
 				map->musicID = musicID + 1;
 				
 			} else if(mapFile->flags & MUSIC_STOP_FLAG) {
-				mmStop();
+				if(mmActive()) mmStop();
 				mmStart(musicID, MM_PLAY_LOOP);
 			}
 			
 		} else if(mapFile->flags & MUSIC_STOP_FLAG && map->musicID) {
-			mmStop();
-			mmUnload(map->musicID);
+			if(mmActive()) mmStop();
+			mmUnload(map->musicID - 1);
 			map->musicID = 0;
 		}
 		
