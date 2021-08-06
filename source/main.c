@@ -97,7 +97,17 @@ int main() {
 	//this should work the same as the normal gl call
 	glViewport(0,0,255,191);
 	
-	mmInitDefaultMem((mm_addr) loadFile("nitro:/soundbank.bin", NULL));
+	//mmInitDefaultMem((mm_addr) loadFile("nitro:/soundbank.bin", NULL));
+	mm_ds_system maxModSys;
+    maxModSys.mod_count = MSL_NSONGS;
+    maxModSys.samp_count= MSL_NSAMPS;
+    maxModSys.mem_bank = malloc(MSL_BANKSIZE * 4);
+    maxModSys.fifo_channel = FIFO_MAXMOD;
+   
+    // initialize maxmod
+    mmInit(&maxModSys);
+    mmSoundBankInFiles("nitro:/soundbank.bin");
+	
 	mmSelectMode(MM_MODE_B); //Interpolated 16ch
 	
 	gameInit();
