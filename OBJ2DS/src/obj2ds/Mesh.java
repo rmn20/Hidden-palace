@@ -36,6 +36,7 @@ public class Mesh {
     }
 
     public byte[] export(boolean exportPolyData, boolean exportCmdList) {
+        System.out.println("Working on mesh "+name);
         double min[] = new double[]{Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE};
         double max[] = new double[]{-Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE};
         
@@ -60,32 +61,25 @@ public class Mesh {
             pol.aabb(min, max);
         }
         
-        int[] minL = new int[]{
-                (int) Math.floor(min[0] * 4096),
-                (int) Math.floor(min[1] * 4096),
-                (int) Math.floor(min[2] * 4096)
-            };
-        
-        long[] scale;
         //We don't use dynamic scaling by default so we have less gaps
         boolean dynamicScaling = false;
-        int defScale = Mesh.defScale;
         
         for(int i=0; i<3; i++) {
-            int size = (int) Math.round((max[i] * 4096. - minL[i]) * 4096. / defScale + Short.MIN_VALUE);
+            int size = (int) (Math.round(max[i] * 4096 * 4096 / defScale) - Math.round(min[i] * 4096 * 4096 / defScale));
             
-            if(size > Short.MAX_VALUE) {
+            if(size > Short.MAX_VALUE - Short.MIN_VALUE) {
                 dynamicScaling = true;
                 System.out.println("Using dynamic scaling...");
                 break;
             }
         }
         
+        long[] scale;
         if(dynamicScaling) {
             scale = new long[3];
             
             for(int i=0; i<3; i++) {
-                double length = max[i] * 4096 - minL[i];
+                double length = (max[i] - min[i]) * 4096;
                 //65535 чтобы число влезло а не было на границе
                 //Ceil чтобы округлилось в большую сторону
                 double sc = Math.max(1, Math.ceil(length * 4096 / 65535.));
@@ -103,7 +97,7 @@ public class Mesh {
         
         //Added at the last moment
         for(Polygon pol : pols) {
-            pol.prepare(minL, scale, hasColor);
+            pol.prepare(min, scale, hasColor);
         }
         
         try {
@@ -123,9 +117,9 @@ public class Mesh {
             dos.writeIntLE(Float.floatToIntBits((float) max[1]));
             dos.writeIntLE(Float.floatToIntBits((float) max[1]));
             
-            dos.writeIntLE(minL[0]);
-            dos.writeIntLE(minL[1]);
-            dos.writeIntLE(minL[2]);
+            dos.writeIntLE((int) (Math.round(min[0] * 4096 * 4096 / scale[0]) * scale[0] / 4096));
+            dos.writeIntLE((int) (Math.round(min[1] * 4096 * 4096 / scale[1]) * scale[1] / 4096));
+            dos.writeIntLE((int) (Math.round(min[2] * 4096 * 4096 / scale[2]) * scale[2] / 4096));
             
             dos.writeIntLE((int) scale[0]);
             dos.writeIntLE((int) scale[1]);
@@ -135,8 +129,8 @@ public class Mesh {
                 dos.writeShortLE(polv4.size());
                 dos.writeShortLE(polv3.size());
             
-                for(Polygon pol : polv4) pol.write(dos, minL, scale, hasColor);
-                for(Polygon pol : polv3) pol.write(dos, minL, scale, hasColor);
+                for(Polygon pol : polv4) pol.write(dos, hasColor);
+                for(Polygon pol : polv3) pol.write(dos, hasColor);
                 
                 //Padding
                 if((dos.size() & 3) != 0) dos.write(new byte[4 - (dos.size() & 3)]);

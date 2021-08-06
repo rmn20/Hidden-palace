@@ -1,6 +1,5 @@
 package obj2ds;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -19,17 +18,17 @@ public class Polygon {
     
     int id;
 
-    public void prepare(int[] minL, long[] scale, boolean hasColor) {
+    public void prepare(double[] min, long[] scale, boolean hasColor) {
         for(int i=0; i<pos.length; i++) {
             if(!hasColor) norm[i].asNorm();
             else col[i].prepare();
             
             uv[i].asTexcoord();
-            pos[i].asPos(minL, scale);
+            pos[i].asPos(min, scale);
         }
     }
 
-    public void write(NDSOutputStream dos, int[] minL, long[] scale, boolean hasColor) throws IOException {
+    public void write(NDSOutputStream dos, boolean hasColor) throws IOException {
         for(int i=0; i<pos.length; i++) {
             if(!hasColor) dos.writeIntLE(norm[i].xExport | (norm[i].yExport << 10) | (norm[i].zExport << 20));
             else dos.writeShortLE(col[i].export);

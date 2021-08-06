@@ -47,10 +47,13 @@ public class Vector3D extends Vector2D {
         this.z = (z / sqrt);
     }
     
-    public void asPos(int[] minL, long[] scale) {
-        int x = (int) Math.round((this.x * 4096. - minL[0]) * 4096. / scale[0] + Short.MIN_VALUE);
-        int y = (int) Math.round((this.y * 4096. - minL[1]) * 4096. / scale[1] + Short.MIN_VALUE);
-        int z = (int) Math.round((this.z * 4096. - minL[2]) * 4096. / scale[2] + Short.MIN_VALUE);
+    public void asPos(double[] min, long[] scale) {
+        int x = (int) (Math.round(this.x * 4096 * 4096 / scale[0]) 
+                - Math.round(min[0] * 4096 * 4096 / scale[0])) + Short.MIN_VALUE;
+        int y = (int) (Math.round(this.y * 4096 * 4096 / scale[1]) 
+                - Math.round(min[1] * 4096 * 4096 / scale[1])) + Short.MIN_VALUE;
+        int z = (int) (Math.round(this.z * 4096 * 4096 / scale[2]) 
+                - Math.round(min[2] * 4096 * 4096 / scale[2])) + Short.MIN_VALUE;
         
         x = Math.max(Short.MIN_VALUE,  Math.min(Short.MAX_VALUE, x));
         y = Math.max(Short.MIN_VALUE,  Math.min(Short.MAX_VALUE, y));
