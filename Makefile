@@ -84,11 +84,13 @@ export VPATH := $(CURDIR)/$(subst /,,$(dir $(ICON)))\
 
 export DEPSDIR := $(CURDIR)/$(BUILD)
 
-CFILES   := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.c)))
-CPPFILES := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.cpp)))
-SFILES   := $(foreach dir,$(SOURCES),$(notdir $(wildcard $(dir)/*.s)))
-PNGFILES := $(foreach dir,$(GRAPHICS),$(notdir $(wildcard $(dir)/*.png)))
-BINFILES := $(foreach dir,$(DATA),$(notdir $(wildcard $(dir)/*.*)))
+rwildcard = $(foreach d,$(wildcard $(1:=/*)),$(call rwildcard,$d,$2) $(filter $(subst *,%,$2),$d))
+
+CFILES   := $(foreach dir,$(SOURCES),$(notdir $(call rwildcard, $(dir)/, *.c)))
+CPPFILES := $(foreach dir,$(SOURCES),$(notdir $(call rwildcard, $(dir)/, *.cpp)))
+SFILES   := $(foreach dir,$(SOURCES),$(notdir $(call rwildcard, $(dir)/, *.s)))
+PNGFILES := $(foreach dir,$(GRAPHICS),$(notdir $(call rwildcard, $(dir)/, *.png)))
+BINFILES := $(foreach dir,$(DATA),$(notdir $(call rwildcard, $(dir)/, *.*)))
 
 # prepare NitroFS directory
 ifneq ($(strip $(NITRO)),)
